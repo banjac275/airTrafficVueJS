@@ -14,7 +14,6 @@ export default new Router({
     },
     {
       path: '/aircraftInfo',
-      name: 'Aircraft',
       component: Aircraft
     }
   ],

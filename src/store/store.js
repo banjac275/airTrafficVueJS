@@ -19,6 +19,11 @@ export const store = new Vuex.Store({
         return Promise.resolve(temp)
       })
       .catch((err) => Promise.reject(err))
+    },
+    getPic({ commit }, name) {
+      return api.getCompany(name)
+      .then(res => Promise.resolve(res))
+      .catch(err => Promise.reject(err))
     }
   },
   modules: {

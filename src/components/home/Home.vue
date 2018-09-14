@@ -1,108 +1,53 @@
 <template>
-  <v-container fluid>
-    <v-slide-y-transition mode="out-in">
-      <v-layout column align-center>
-        <v-card>
-        <v-container
-          fluid
-          grid-list-lg
-        >
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-card color="blue-grey darken-2" class="white--text">
-                <v-card-title primary-title>
-                  <div class="headline">Unlimited music now</div>
-                  <div>Listen to your favorite artists and albums whenever and wherever, online and offline.</div>
-                </v-card-title>
-                <v-card-actions>
-                  <v-btn flat dark>Listen now</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-flex>
-  
-            <v-flex xs12>
-              <v-card color="cyan darken-2" class="white--text">
-                <v-layout>
-                  <v-flex xs5>
-                    <v-img
-                      src="https://cdn.vuetifyjs.com/images/cards/foster.jpg"
-                      height="125px"
-                      contain
-                    ></v-img>
-                  </v-flex>
-                  <v-flex xs7>
-                    <v-card-title primary-title>
-                      <div>
-                        <div class="headline">Supermodel</div>
-                        <div>Foster the People</div>
-                        <div>(2014)</div>
-                      </div>
-                    </v-card-title>
-                  </v-flex>
-                </v-layout>
-                <v-divider light></v-divider>
-                <v-card-actions class="pa-3">
-                  Rate this album
-                  <v-spacer></v-spacer>
-                  <v-icon>star_border</v-icon>
-                  <v-icon>star_border</v-icon>
-                  <v-icon>star_border</v-icon>
-                  <v-icon>star_border</v-icon>
-                  <v-icon>star_border</v-icon>
-                </v-card-actions>
-              </v-card>
-            </v-flex>
-  
-            <v-flex xs12>
-              <v-card color="purple" class="white--text">
-                <v-layout row>
-                  <v-flex xs7>
-                    <v-card-title primary-title>
-                      <div>
-                        <div class="headline">Halycon Days</div>
-                        <div>Ellie Goulding</div>
-                        <div>(2013)</div>
-                      </div>
-                    </v-card-title>
-                  </v-flex>
-                  <v-flex xs5>
-                    <v-img
-                      src="https://cdn.vuetifyjs.com/images/cards/halcyon.png"
-                      height="125px"
-                      contain
-                    ></v-img>
-                  </v-flex>
-                </v-layout>
-                <v-divider light></v-divider>
-                <v-card-actions class="pa-3">
-                  Rate this album
-                  <v-spacer></v-spacer>
-                  <v-icon>star_border</v-icon>
-                  <v-icon>star_border</v-icon>
-                  <v-icon>star_border</v-icon>
-                  <v-icon>star_border</v-icon>
-                  <v-icon>star_border</v-icon>
-                </v-card-actions>
-              </v-card>
-            </v-flex>
-          </v-layout>
-        </v-container>
+  <v-layout>
+    <v-flex xs8 offset-xs2>
+      <v-card class="mb-3">
+
+        <v-card-title primary-title>
+          <v-card-text v-if="obtained">
+            <h3 class="headline text-xs-center">Airplanes in sky above you</h3>
+          </v-card-text>
+          <v-card-text v-else>
+            <h3 class="headline text-xs-center">{{waitText}}</h3>
+          </v-card-text>
+        </v-card-title>
+
+        <v-card-text class="content-info d-flex flex-row align-items-center" v-if="obtained">
+          <h3>Bound</h3>
+          <h3>Altitude</h3>
+          <h3>Flight Code</h3>
+        </v-card-text>
+        
+        <div v-for="item in eastBound" :key="item.Icao">
+          <show-aircraft :flight="item" :rot="true"></show-aircraft>
+        </div>
+        <div v-for="item in westBound" :key="item.Id">
+          <show-aircraft :flight="item" :rot="false"></show-aircraft>
+        </div>
+
       </v-card>
-      </v-layout>
-    </v-slide-y-transition>
-  </v-container>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
 import ShowAircraft from './ShowAircraft.vue'
+import * as VCard from 'vuetify/es5/components/VCard'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Home',
   data() {
     return {
-
+      waitText: 'Please wait for data to be obtained',
+      obtained: false,
+      eastBound: [],
+      westBound: []
     }
+  },
+  components: {
+   ...VCard,
+   'show-aircraft': ShowAircraft
   },
   methods: {
     ...mapActions([
@@ -117,10 +62,12 @@ export default {
           let longitude = position.coords.longitude
 
           this.retAllData({lat: latitude, lon: longitude})
-          .then((data) => {
-            console.log(data)
+          .then(data => {
+            this.obtained = true
+            this.eastBound = data.east.acList
+            this.westBound = data.west.acList
           })
-          .catch((err) => {
+          .catch(err => {
 
           })
         }, (error) => {
@@ -135,5 +82,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.content-info {
+  text-align: center;
+  justify-content: space-evenly;
+  margin-left: 10%;
+  width: 80%;
+  h3 {
+    max-width: 100px;
+  }
+}
 </style>

@@ -3,7 +3,7 @@
     <v-content>
       <router-view/>
     </v-content>
-    <v-footer :fixed="fixed" app>
+    <v-footer :fixed="fixed" app class="info" dark>
       <span>&copy; 2018, Nikola Stevanović</span>
     </v-footer>
   </v-app>
