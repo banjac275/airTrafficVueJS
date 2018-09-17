@@ -26,16 +26,20 @@ export default {
   },
   methods: {
     planeDetails() {
+      //podatke o letu stavlja u session storage i pokrece stranicu za info
       sessionStorage.setItem('flight', JSON.stringify(this.flight))
       this.$router.push('aircraftInfo')
     }
   },
   mounted() {
+    //mehanizam za odredjivanje da li je let east bound ili west bound
     switch(this.flight.Alt % 2 === 0) {
       case true:
+        //west bound
         this.direction = 315
         break
       case false:
+        //east bound
         this.direction = 225
         break
     }

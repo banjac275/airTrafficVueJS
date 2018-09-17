@@ -43,13 +43,14 @@ export default {
     ...VImg
   },
   mounted() {
+    //preuzima podatke iz session storage-a i trazi firmu da bi mogao da nadje logo ako uopste postoji
     let recvData = JSON.parse(sessionStorage.getItem('flight'))
-    console.log(recvData)
     if (recvData) {
       this.flight = recvData
       if (this.flight.Op !== undefined || this.flight.Op !== null) {
         this.getPic(this.flight.Op)
         .then(company => {
+          //ako postoji firma i logo, dodeljuje se kao source za sliku inace tu ulogu uzima placeholder slika
           (company.data.logo !== null) ? this.pic = company.data.logo : this.pic = '@/assets/logo-placeholder-png.png'
         })
         .catch(err => {
