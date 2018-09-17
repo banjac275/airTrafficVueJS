@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-flex xs8 offset-xs2>
+    <v-flex xs10 offset-xs1>
       <v-card class="mb-3">
 
         <v-card-title primary-title>
@@ -18,11 +18,8 @@
           <h3>Flight Code</h3>
         </v-card-text>
         
-        <div v-for="item in eastBound" :key="item.Icao">
-          <show-aircraft :flight="item" :rot="true"></show-aircraft>
-        </div>
-        <div v-for="item in westBound" :key="item.Id">
-          <show-aircraft :flight="item" :rot="false"></show-aircraft>
+        <div v-for="item in flights" :key="item.Icao">
+          <show-aircraft :flight="item"></show-aircraft>
         </div>
 
       </v-card>
@@ -41,8 +38,8 @@ export default {
     return {
       waitText: 'Please wait for data to be obtained',
       obtained: false,
-      eastBound: [],
-      westBound: []
+      good: true,
+      flights: []
     }
   },
   components: {
@@ -52,10 +49,8 @@ export default {
   methods: {
     ...mapActions([
       'retAllData'
-    ])
-  },
-  mounted() {
-    this.$nextTick(() => {
+    ]),
+    startAll() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
           let latitude = position.coords.latitude
@@ -64,18 +59,24 @@ export default {
           this.retAllData({lat: latitude, lon: longitude})
           .then(data => {
             this.obtained = true
-            this.eastBound = data.east.acList
-            this.westBound = data.west.acList
+            this.flights = data
+            setTimeout(() => this.startAll(), 60000)
           })
           .catch(err => {
-
+            console.log(err)
           })
         }, (error) => {
-
+          console.log(error)
+          this.waitText = 'Please enable geolocation!'
         })
       } else {
-
+        this.waitText = 'Please enable geolocation!'
       }
+    }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.startAll()
     })
   }  
 }

@@ -4,7 +4,7 @@
       <router-view/>
     </v-content>
     <v-footer :fixed="fixed" app class="info" dark>
-      <span>&copy; 2018, Nikola Stevanović</span>
+      <span class="ml-1">&copy; 2018, Nikola Stevanović</span>
     </v-footer>
   </v-app>
 </template>

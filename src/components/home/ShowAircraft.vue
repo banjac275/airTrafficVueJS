@@ -1,6 +1,6 @@
 <template>
   <v-layout @click="planeDetails">
-    <v-flex xs8 offset-xs2>
+    <v-flex xs10 offset-xs1>
       <v-card align-center justify-center row fill-height class="plane secondary">
         <font-awesome-icon icon="plane" :transform="{ rotate: direction }" class="sub-section"/>
         <div class="sub-section">{{ flight.Alt }}</div>
@@ -15,7 +15,7 @@ import * as VCard from 'vuetify/es5/components/VCard'
 
 export default {
   name: 'ShowAircraft',
-  props: ['flight', 'rot'],
+  props: ['flight'],
   data() {
     return {
       direction: 0
@@ -31,12 +31,12 @@ export default {
     }
   },
   mounted() {
-    switch(this.rot) {
+    switch(this.flight.Alt % 2 === 0) {
       case true:
-        this.direction = 225
+        this.direction = 315
         break
       case false:
-        this.direction = 315
+        this.direction = 225
         break
     }
   }

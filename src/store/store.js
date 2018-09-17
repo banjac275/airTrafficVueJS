@@ -8,15 +8,11 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
   actions: {
     retAllData({ commit }, data) {
-      let temp = {}
-      return api.getRoutesWest(data.lat, data.lon)
-      .then(resp => {
-        temp.west = resp
-        return api.getRoutesEast(data.lat, data.lon)
-      })
+      return api.getRoutes(data.lat, data.lon)
       .then((response) => {
-        temp.east = response
-        return Promise.resolve(temp)
+        let tmpList = response.acList
+        tmpList.sort((a, b) => b.Alt - a.Alt)
+        return Promise.resolve(tmpList)
       })
       .catch((err) => Promise.reject(err))
     },

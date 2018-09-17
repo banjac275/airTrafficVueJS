@@ -3,7 +3,15 @@
     <v-flex xs8 offset-xs2>
       <v-card class="">
         <v-card-text>
-          <h3 class="text-xs-center"></h3>
+          <h2 class="text-xs-center">Flight Info</h2>
+          <hr>
+          <h3 class="text-xs-center">Airplane manufacturer: {{flight.Man}}</h3>
+          <h3 class="text-xs-center">Airplane model: {{flight.Mdl}}</h3>
+          <h3 class="text-xs-center">Origin: {{flight.From}}</h3>
+          <h3 class="text-xs-center">Destination: {{flight.To}}</h3>
+          <h3 class="text-xs-center">Logo:</h3>
+          <v-img class="mx-auto pic" :src="pic"></v-img>
+          <v-btn class="mx-auto btn secondary" @click="getBack">Return back</v-btn>
         </v-card-text>
       </v-card>
     </v-flex>
@@ -12,6 +20,7 @@
 
 <script>
 import * as VCard from 'vuetify/es5/components/VCard'
+import * as VImg from 'vuetify/es5/components/VImg'
 import { mapActions } from 'vuex'
 
 export default {
@@ -24,10 +33,14 @@ export default {
   methods: {
     ...mapActions([
       'getPic'
-    ])
+    ]),
+    getBack() {
+      this.$router.push('/')
+    }
   },
   components: {
-    ...VCard
+    ...VCard,
+    ...VImg
   },
   mounted() {
     let recvData = JSON.parse(sessionStorage.getItem('flight'))
@@ -37,11 +50,13 @@ export default {
       if (this.flight.Op !== undefined || this.flight.Op !== null) {
         this.getPic(this.flight.Op)
         .then(company => {
-          console.log(company)
+          (company.data.logo !== null) ? this.pic = company.data.logo : this.pic = '@/assets/logo-placeholder-png.png'
         })
         .catch(err => {
           console.log(err)
         })
+      } else {
+        this.pic = '@/assets/logo-placeholder-png.png'
       }
     }
   }
@@ -49,6 +64,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.pic {
+  height: 300px;
+  width: 300px;
+}
 
+.btn {
+  width: 300px;
+  line-height: 40px;
+  margin-top: 20px;
+  left: calc(50% - 150px);
+}
 </style>
 
